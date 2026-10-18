@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aplikasi To-Do List modern dan interaktif dengan desain premium dark mode, progress bar, filter status, dan penyimpanan Local Storage.">
+  <title>TaskFlow - Kelola Tugas Harian Anda</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Background Elements for Glassmorphism Glow -->
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <main class="todo-card">
+      <!-- Header -->
+      <header class="todo-header">
+        <div class="header-main">
+          <div>
+            <h1>TaskFlow</h1>
+            <p class="subtitle" id="current-date">Selasa, 16 Juni 2026</p>
+          </div>
+          <div class="theme-badge">
+            <span class="pulse-dot"></span>
+            Personal App
+          </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section">
+          <div class="progress-info">
+            <span class="progress-label">Progres Tugas</span>
+            <span class="progress-percentage" id="progress-text">0%</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progress-bar"></div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Input Form -->
+      <form id="todo-form" class="todo-input-group">
+        <div class="input-wrapper">
+          <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          <input type="text" id="todo-input" placeholder="Tambah tugas baru hari ini..." aria-label="Tulis tugas baru" required autocomplete="off">
+        </div>
+        <button type="submit" class="btn-add" aria-label="Tambah tugas">
+          <span>Tambah</span>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </button>
+      </form>
+
+      <!-- Filters & Stats -->
+      <div class="todo-controls">
+        <div class="filter-tabs" role="tablist">
+          <div class="slider-indicator" id="slider-indicator"></div>
+          <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true" id="tab-all">Semua</button>
+          <button class="filter-tab" data-filter="active" role="tab" aria-selected="false" id="tab-active">Aktif</button>
+          <button class="filter-tab" data-filter="completed" role="tab" aria-selected="false" id="tab-completed">Selesai</button>
+        </div>
+      </div>
+
+      <!-- Todo List Container -->
+      <div class="todo-list-wrapper">
+        <ul id="todo-list" class="todo-list">
+          <!-- Tugas akan dirender di sini secara dinamis -->
+        </ul>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state hidden">
+          <div class="empty-icon-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="empty-icon">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+          </div>
+          <h3>Semua Bersih!</h3>
+          <p>Belum ada tugas di kategori ini. Tambahkan tugas baru atau nikmati waktu luang Anda!</p>
+        </div>
+      </div>
+
+      <!-- Footer Info -->
+      <footer class="todo-footer">
+        <span class="items-count" id="items-count">0 tugas tersisa</span>
+        <button id="clear-completed" class="btn-clear hidden">
+          Hapus Semua yang Selesai
+        </button>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Javascript -->
+  <script src="app.js"></script>
+</body>
+</html>
