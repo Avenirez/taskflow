@@ -4,148 +4,225 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Aplikasi To-Do List modern dan interaktif ">
-  <title>Tugasku</title>
-  <!-- Google Fonts -->
+  <meta name="description" content="Manajemen tugas harian berbasis browser dengan penyimpanan lokal.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="no-referrer">
+  <title>Taskflow</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet">
-  <!-- Stylesheet -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <div class="app-container">
-    <!-- Background Elements for Glassmorphism Glow -->
-    <div class="glow-orb orb-1"></div>
-    <div class="glow-orb orb-2"></div>
-
-    <main class="todo-card">
+  <div class="app-layout">
+    <main class="task-panel">
       <!-- Header -->
-      <header class="todo-header">
-        <div class="header-main">
-          <div>
-            <h1>Tugasku</h1>
-            <p class="subtitle" id="current-date">Selasa, 16 Juni 2026</p>
+      <header class="panel-header">
+        <div class="header-top">
+          <div class="brand-block">
+            <div class="brand-mark">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <div>
+              <h1 class="brand-title">Taskflow</h1>
+              <p class="brand-subtitle" id="current-date">Memuat tanggal...</p>
+            </div>
           </div>
-          <div class="theme-badge">
-            <span class="pulse-dot"></span>
-            Personal App
+
+          <div class="header-utilities">
+            <button type="button" id="sound-toggle" class="control-btn" aria-label="Pengaturan audio" title="Audio: Aktif">
+              <svg class="sound-icon sound-icon-on" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+              </svg>
+              <svg class="sound-icon sound-icon-off hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <line x1="23" y1="9" x2="17" y2="15"></line>
+                <line x1="17" y1="9" x2="23" y2="15"></line>
+              </svg>
+            </button>
+            <div class="status-indicator">
+              <span class="status-dot"></span>
+              <span class="status-text">Lokal</span>
+            </div>
           </div>
         </div>
 
-        <!-- Progress Section -->
-        <div class="progress-section">
-          <div class="progress-info">
-            <span class="progress-label">Progres Tugas</span>
-            <span class="progress-percentage" id="progress-text">0%</span>
+        <!-- Metric Bar -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Progres Penyelesaian</span>
+            <span class="metric-value" id="progress-text">0%</span>
           </div>
-          <div class="progress-bar-container">
-            <div class="progress-bar-fill" id="progress-bar"></div>
+          <div class="metric-track">
+            <div class="metric-fill" id="progress-bar"></div>
           </div>
         </div>
       </header>
 
-      <!-- Input Form -->
-      <form id="todo-form" class="todo-form-container">
-        <div class="todo-input-group">
-          <div class="input-wrapper">
-            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      <!-- Task Creator -->
+      <form id="todo-form" class="task-form">
+        <div class="form-row primary-row">
+          <div class="input-field">
+            <svg class="field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
             </svg>
-            <input type="text" id="todo-input" placeholder="Tambah tugas baru..." aria-label="Tulis tugas baru" required
-              autocomplete="off">
+            <input type="text" id="todo-input" placeholder="Tulis tugas baru lalu tekan Enter..." aria-label="Nama tugas baru" required autocomplete="off" maxlength="160">
           </div>
-          <button type="submit" class="btn-add" aria-label="Tambah tugas">
+          <button type="submit" class="submit-btn" aria-label="Tambah tugas">
             <span>Tambah</span>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
+            <kbd class="btn-kbd">Enter</kbd>
           </button>
         </div>
 
-        <!-- Meta Inputs: Priority, Date, Category -->
-        <div class="todo-meta-inputs">
-          <div class="meta-input-group">
-            <label for="todo-priority" class="meta-label">Skala Prioritas</label>
-            <select id="todo-priority" aria-label="Prioritas" title="Pilih Prioritas">
-              <option value="rendah">🟢 Rendah</option>
-              <option value="sedang" selected>🟡 Sedang</option>
-              <option value="tinggi">🔴 Tinggi</option>
+        <div class="form-row meta-row">
+          <div class="meta-field">
+            <label for="todo-priority" class="field-label">Prioritas</label>
+            <select id="todo-priority" aria-label="Prioritas">
+              <option value="rendah">Rendah</option>
+              <option value="sedang" selected>Sedang</option>
+              <option value="tinggi">Tinggi</option>
             </select>
           </div>
-          <div class="meta-input-group">
-            <label for="todo-date" class="meta-label">Tenggat Waktu</label>
-            <input type="date" id="todo-date" aria-label="Batas Waktu" title="Batas Waktu">
+          <div class="meta-field">
+            <label for="todo-date" class="field-label">Tenggat</label>
+            <input type="date" id="todo-date" aria-label="Batas waktu">
           </div>
-          <div class="meta-input-group">
-            <label for="todo-category" class="meta-label">Kategori Tugas</label>
-            <select id="todo-category" aria-label="Kategori" title="Pilih Kategori">
-              <option value="umum" selected>📁 Umum</option>
-              <option value="kerja">💼 Kerja</option>
-              <option value="pribadi">👤 Pribadi</option>
-              <option value="belanja">🛒 Belanja</option>
+          <div class="meta-field">
+            <label for="todo-category" class="field-label">Kategori</label>
+            <select id="todo-category" aria-label="Kategori">
+              <option value="umum" selected>Umum</option>
+              <option value="kerja">Kerja</option>
+              <option value="pribadi">Pribadi</option>
+              <option value="keuangan">Keuangan</option>
             </select>
           </div>
         </div>
       </form>
 
-      <!-- Search Bar -->
-      <div class="search-wrapper">
-        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-        <input type="text" id="search-input" placeholder="Cari tugas..." aria-label="Cari tugas" autocomplete="off">
-      </div>
-
-      <!-- Filters & Stats -->
-      <div class="todo-controls">
-        <div class="filter-tabs" role="tablist">
-          <div class="slider-indicator" id="slider-indicator"></div>
-          <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true"
-            id="tab-all">Semua</button>
-          <button class="filter-tab" data-filter="active" role="tab" aria-selected="false"
-            id="tab-active">Aktif</button>
-          <button class="filter-tab" data-filter="completed" role="tab" aria-selected="false"
-            id="tab-completed">Selesai</button>
+      <!-- Search and Filter Toolbar -->
+      <section class="toolbar-section">
+        <div class="search-field">
+          <svg class="field-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="search-input" placeholder="Filter menurut nama..." aria-label="Cari tugas" autocomplete="off" maxlength="80">
         </div>
-      </div>
 
-      <!-- Todo List Container -->
-      <div class="todo-list-wrapper">
-        <ul id="todo-list" class="todo-list">
-          <!-- Tugas akan dirender di sini secara dinamis -->
+        <div class="category-strip" id="category-filters" role="group" aria-label="Filter kategori">
+          <button type="button" class="filter-chip active" data-category="all">Semua</button>
+          <button type="button" class="filter-chip" data-category="umum">Umum</button>
+          <button type="button" class="filter-chip" data-category="kerja">Kerja</button>
+          <button type="button" class="filter-chip" data-category="pribadi">Pribadi</button>
+          <button type="button" class="filter-chip" data-category="keuangan">Keuangan</button>
+        </div>
+
+        <div class="state-tabs" role="tablist">
+          <div class="tab-slider" id="slider-indicator"></div>
+          <button class="state-tab active" data-filter="all" role="tab" aria-selected="true" id="tab-all">
+            Semua <span class="tab-count" id="count-all">0</span>
+          </button>
+          <button class="state-tab" data-filter="active" role="tab" aria-selected="false" id="tab-active">
+            Aktif <span class="tab-count" id="count-active">0</span>
+          </button>
+          <button class="state-tab" data-filter="completed" role="tab" aria-selected="false" id="tab-completed">
+            Selesai <span class="tab-count" id="count-completed">0</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Task List Container -->
+      <section class="list-section">
+        <ul id="todo-list" class="task-list">
+          <!-- Item tugas dirender melalui app.js -->
         </ul>
 
         <!-- Empty State -->
-        <div id="empty-state" class="empty-state hidden">
-          <div class="empty-icon-wrapper">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-              class="empty-icon">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        <div id="empty-state" class="empty-display hidden">
+          <div class="empty-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
             </svg>
           </div>
-          <h3>Tidak ada tugas!</h3>
-          <p>Belum ada tugas. Selamat menikmati waktu luang Anda!</p>
+          <h2 class="empty-title" id="empty-title">Tidak ada tugas</h2>
+          <p class="empty-description" id="empty-desc">Daftar tugas kosong. Masukkan tugas baru di atas.</p>
         </div>
-      </div>
+      </section>
 
-      <!-- Footer Info -->
-      <footer class="todo-footer">
-        <span class="items-count" id="items-count">0 tugas tersisa</span>
-        <button id="clear-completed" class="btn-clear hidden">
-          Hapus Semua yang Selesai
+      <!-- Panel Footer -->
+      <footer class="panel-footer">
+        <span class="footer-count" id="items-count">0 tugas tersisa</span>
+        <button type="button" id="clear-completed" class="clear-btn hidden">
+          Hapus yang selesai
         </button>
       </footer>
     </main>
   </div>
 
-  <!-- Javascript -->
+  <!-- Edit Task Modal -->
+  <div id="edit-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h2 id="modal-title" class="modal-heading">Edit Tugas</h2>
+        <button type="button" class="close-btn" id="modal-close" aria-label="Tutup jendela edit">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <form id="edit-form" class="modal-form">
+        <div class="modal-row">
+          <label for="edit-text" class="field-label">Nama Tugas</label>
+          <input type="text" id="edit-text" required autocomplete="off" maxlength="160">
+        </div>
+
+        <div class="modal-grid">
+          <div class="modal-row">
+            <label for="edit-priority" class="field-label">Prioritas</label>
+            <select id="edit-priority">
+              <option value="rendah">Rendah</option>
+              <option value="sedang">Sedang</option>
+              <option value="tinggi">Tinggi</option>
+            </select>
+          </div>
+          <div class="modal-row">
+            <label for="edit-date" class="field-label">Tenggat</label>
+            <input type="date" id="edit-date">
+          </div>
+          <div class="modal-row">
+            <label for="edit-category" class="field-label">Kategori</label>
+            <select id="edit-category">
+              <option value="umum">Umum</option>
+              <option value="kerja">Kerja</option>
+              <option value="pribadi">Pribadi</option>
+              <option value="keuangan">Keuangan</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-foot">
+          <button type="button" class="btn-secondary" id="modal-cancel">Batal</button>
+          <button type="submit" class="btn-primary">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast-container" class="toast-shelf" aria-live="polite"></div>
+
+  <!-- Logic Script -->
   <script src="app.js"></script>
 </body>
 
