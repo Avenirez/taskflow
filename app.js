@@ -181,6 +181,22 @@ function render() {
     return matchesFilter && matchesSearch;
   });
 
+  // 2.5 Sort tasks by priority (Tinggi > Sedang > Rendah) and then by Date
+  const priorityWeight = {
+    'tinggi': 3,
+    'sedang': 2,
+    'rendah': 1
+  };
+  
+  filteredTodos.sort((a, b) => {
+    const pA = priorityWeight[a.priority] || 0;
+    const pB = priorityWeight[b.priority] || 0;
+    if (pA !== pB) {
+      return pB - pA;
+    }
+    return b.createdAt - a.createdAt;
+  });
+
   // 3. Clear existing list element
   todoList.innerHTML = '';
 
