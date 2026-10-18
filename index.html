@@ -69,6 +69,7 @@
         <!-- Meta Inputs: Priority, Date, Category -->
         <div class="todo-meta-inputs">
           <div class="meta-input-group">
+            <label for="todo-priority" class="meta-label">Skala Prioritas</label>
             <select id="todo-priority" aria-label="Prioritas" title="Pilih Prioritas">
               <option value="rendah">🟢 Rendah</option>
               <option value="sedang" selected>🟡 Sedang</option>
@@ -76,9 +77,11 @@
             </select>
           </div>
           <div class="meta-input-group">
+            <label for="todo-date" class="meta-label">Tenggat Waktu</label>
             <input type="date" id="todo-date" aria-label="Batas Waktu" title="Batas Waktu">
           </div>
           <div class="meta-input-group">
+            <label for="todo-category" class="meta-label">Kategori Tugas</label>
             <select id="todo-category" aria-label="Kategori" title="Pilih Kategori">
               <option value="umum" selected>📁 Umum</option>
               <option value="kerja">💼 Kerja</option>

@@ -336,6 +336,16 @@ body {
 .meta-input-group {
   flex: 1;
   min-width: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.meta-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  padding-left: 4px;
 }
 
 .meta-input-group select,
