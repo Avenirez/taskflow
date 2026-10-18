@@ -26,7 +26,7 @@
       <header class="todo-header">
         <div class="header-main">
           <div>
-            <h1>TaskFlow</h1>
+            <h1>Tugasku</h1>
             <p class="subtitle" id="current-date">Selasa, 16 Juni 2026</p>
           </div>
           <div class="theme-badge">
@@ -48,22 +48,54 @@
       </header>
 
       <!-- Input Form -->
-      <form id="todo-form" class="todo-input-group">
-        <div class="input-wrapper">
-          <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg>
-          <input type="text" id="todo-input" placeholder="Tambah tugas baru..." aria-label="Tulis tugas baru" required
-            autocomplete="off">
+      <form id="todo-form" class="todo-form-container">
+        <div class="todo-input-group">
+          <div class="input-wrapper">
+            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <input type="text" id="todo-input" placeholder="Tambah tugas baru..." aria-label="Tulis tugas baru" required
+              autocomplete="off">
+          </div>
+          <button type="submit" class="btn-add" aria-label="Tambah tugas">
+            <span>Tambah</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </button>
         </div>
-        <button type="submit" class="btn-add" aria-label="Tambah tugas">
-          <span>Tambah</span>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
-        </button>
+
+        <!-- Meta Inputs: Priority, Date, Category -->
+        <div class="todo-meta-inputs">
+          <div class="meta-input-group">
+            <select id="todo-priority" aria-label="Prioritas" title="Pilih Prioritas">
+              <option value="rendah">🟢 Rendah</option>
+              <option value="sedang" selected>🟡 Sedang</option>
+              <option value="tinggi">🔴 Tinggi</option>
+            </select>
+          </div>
+          <div class="meta-input-group">
+            <input type="date" id="todo-date" aria-label="Batas Waktu" title="Batas Waktu">
+          </div>
+          <div class="meta-input-group">
+            <select id="todo-category" aria-label="Kategori" title="Pilih Kategori">
+              <option value="umum" selected>📁 Umum</option>
+              <option value="kerja">💼 Kerja</option>
+              <option value="pribadi">👤 Pribadi</option>
+              <option value="belanja">🛒 Belanja</option>
+            </select>
+          </div>
+        </div>
       </form>
+
+      <!-- Search Bar -->
+      <div class="search-wrapper">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" id="search-input" placeholder="Cari tugas..." aria-label="Cari tugas" autocomplete="off">
+      </div>
 
       <!-- Filters & Stats -->
       <div class="todo-controls">

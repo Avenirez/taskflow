@@ -17,6 +17,10 @@ let state = {
 // ==========================================================================
 const todoForm = document.getElementById('todo-form');
 const todoInput = document.getElementById('todo-input');
+const todoPriority = document.getElementById('todo-priority');
+const todoDate = document.getElementById('todo-date');
+const todoCategory = document.getElementById('todo-category');
+const searchInput = document.getElementById('search-input');
 const todoList = document.getElementById('todo-list');
 const emptyState = document.getElementById('empty-state');
 const currentDateEl = document.getElementById('current-date');
@@ -26,6 +30,32 @@ const itemsCount = document.getElementById('items-count');
 const clearCompletedBtn = document.getElementById('clear-completed');
 const filterTabs = document.querySelectorAll('.filter-tab');
 const sliderIndicator = document.getElementById('slider-indicator');
+
+// ==========================================================================
+// AUDIO API
+// ==========================================================================
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+function playSuccessSound() {
+  if (audioContext.state === 'suspended') {
+    audioContext.resume();
+  }
+  const osc = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+  osc.frequency.exponentialRampToValueAtTime(1046.50, audioContext.currentTime + 0.1); // C6
+  
+  gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+  gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.05);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+  
+  osc.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  osc.start(audioContext.currentTime);
+  osc.stop(audioContext.currentTime + 0.3);
+}
 
 // ==========================================================================
 // DATE & TIME INITIALIZATION
@@ -55,7 +85,7 @@ function saveToLocalStorage() {
 // ==========================================================================
 
 // [CREATE] Add Task
-function addTodo(text) {
+function addTodo(text, priority, date, category) {
   const cleanText = text.trim();
   if (!cleanText) return;
 
@@ -63,6 +93,9 @@ function addTodo(text) {
     id: Date.now().toString(),
     text: cleanText,
     completed: false,
+    priority: priority || 'sedang',
+    date: date || '',
+    category: category || 'umum',
     createdAt: new Date().getTime()
   };
 
@@ -75,6 +108,7 @@ function addTodo(text) {
 function toggleTodo(id) {
   state.todos = state.todos.map(todo => {
     if (todo.id === id) {
+      if (!todo.completed) playSuccessSound();
       return { ...todo, completed: !todo.completed };
     }
     return todo;
@@ -137,13 +171,15 @@ function render() {
   progressBar.style.width = `${progressPercent}%`;
   progressText.textContent = `${progressPercent}%`;
 
-  // 2. Filter tasks based on current filter state
-  let filteredTodos = [...state.todos];
-  if (state.currentFilter === 'active') {
-    filteredTodos = state.todos.filter(t => !t.completed);
-  } else if (state.currentFilter === 'completed') {
-    filteredTodos = state.todos.filter(t => t.completed);
-  }
+  // 2. Filter tasks based on current filter state and search
+  const searchQuery = searchInput ? searchInput.value.toLowerCase() : '';
+  let filteredTodos = state.todos.filter(todo => {
+    const matchesFilter = state.currentFilter === 'all' || 
+                          (state.currentFilter === 'active' && !todo.completed) || 
+                          (state.currentFilter === 'completed' && todo.completed);
+    const matchesSearch = todo.text.toLowerCase().includes(searchQuery);
+    return matchesFilter && matchesSearch;
+  });
 
   // 3. Clear existing list element
   todoList.innerHTML = '';
@@ -162,6 +198,14 @@ function render() {
       todoItem.className = `todo-item ${todo.completed ? 'completed' : ''}`;
       todoItem.setAttribute('data-id', todo.id);
 
+      // Calculate Date Badge Overdue Status
+      const isOverdue = todo.date && new Date(todo.date) < new Date(new Date().setHours(0,0,0,0)) && !todo.completed;
+      
+      // Formatting Badges
+      const dateBadge = todo.date ? `<span class="badge badge-date ${isOverdue ? 'overdue' : ''}">📅 ${todo.date}</span>` : '';
+      const priorityBadge = todo.priority ? `<span class="badge badge-priority-${todo.priority}">${todo.priority === 'tinggi' ? '🔴 Tinggi' : todo.priority === 'sedang' ? '🟡 Sedang' : '🟢 Rendah'}</span>` : '';
+      const categoryBadge = todo.category ? `<span class="badge badge-category">📁 ${todo.category.charAt(0).toUpperCase() + todo.category.slice(1)}</span>` : '';
+
       // Inner structure creation
       todoItem.innerHTML = `
         <div class="todo-content">
@@ -169,7 +213,14 @@ function render() {
             <input type="checkbox" ${todo.completed ? 'checked' : ''}>
             <span class="checkmark"></span>
           </label>
-          <span class="todo-text" spellcheck="false">${escapeHTML(todo.text)}</span>
+          <div class="todo-text-wrapper">
+            <span class="todo-text" spellcheck="false">${escapeHTML(todo.text)}</span>
+            <div class="todo-meta-badges">
+              ${priorityBadge}
+              ${categoryBadge}
+              ${dateBadge}
+            </div>
+          </div>
         </div>
         <div class="todo-actions">
           <button class="btn-action btn-edit" title="Edit Tugas" aria-label="Edit Tugas">
@@ -295,12 +346,24 @@ function updateSliderPosition(activeTab) {
 todoForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const text = todoInput.value;
+  const priority = todoPriority ? todoPriority.value : 'sedang';
+  const date = todoDate ? todoDate.value : '';
+  const category = todoCategory ? todoCategory.value : 'umum';
+
   if (text.trim()) {
-    addTodo(text);
+    addTodo(text, priority, date, category);
     todoInput.value = '';
+    if (todoDate) todoDate.value = '';
+    if (todoPriority) todoPriority.value = 'sedang';
+    if (todoCategory) todoCategory.value = 'umum';
     todoInput.focus();
   }
 });
+
+// Search Input Logic
+if (searchInput) {
+  searchInput.addEventListener('input', render);
+}
 
 // Clear Completed Click
 clearCompletedBtn.addEventListener('click', clearCompleted);
